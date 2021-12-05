@@ -2,7 +2,6 @@
 using Client.UnityComponents;
 using Leopotam.Ecs;
 using UnityEngine;
-using Motion = Client.Components.Motion;
 
 namespace Client.Systems
 {
@@ -10,7 +9,7 @@ namespace Client.Systems
     {
         private SceneData sceneData;
         
-        private readonly EcsFilter<PlayerInputData, Movement, Character> _filter;
+        private readonly EcsFilter<PlayerInputData, Movable, Character> _filter;
 
         public void Run()
         {
@@ -20,32 +19,50 @@ namespace Client.Systems
                 ref var movement = ref _filter.Get2(i);
                 ref var character = ref _filter.Get3(i);
 
-                var targetSpeed = movement.MaxSpeed * input.Movement.magnitude;
-                movement.CurrentSpeed = Mathf.MoveTowards(movement.CurrentSpeed, targetSpeed, movement.Acceleration * Time.deltaTime);
-
-                var cameraTransform = sceneData.Camera.transform;
-                var forward = cameraTransform.forward;
-                var right = cameraTransform.right;
-
-                forward.y = 0f;
-                right.y = 0f;
-            
-                forward.Normalize();
-                right.Normalize();
-
-                Vector3 movementDirection;
-
-                if (targetSpeed != 0f)
+                if (input.Movement.magnitude < 0.1f)
                 {
-                    movementDirection = forward * input.Movement.y + right * input.Movement.x;
+                    return;
                 }
-                else
+                
+                var direction = input.Movement.normalized;
+
+                var targetAngle = Mathf.Atan2(direction.x,  direction.z) * Mathf.Rad2Deg + sceneData.CameraTransform.eulerAngles.y;;
+                var movementDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+
+                movement.Position += movementDirection.normalized * character.MaxSpeed;
+            }
+        }
+    }
+
+    public class PlayerRotationSystem : IEcsRunSystem
+    {
+        private readonly EcsFilter<PlayerInputData, Movable> _filter;
+
+        private readonly SceneData sceneData;
+        private readonly Configuration configuration;
+
+        private float turnSmoothVelocity;
+        
+        public void Run()
+        {
+            foreach (var i in _filter)
+            {
+                ref var input = ref _filter.Get1(i);
+                ref var movable = ref _filter.Get2(i);
+
+                var direction = input.Movement.normalized;
+                
+                if (direction.magnitude < 0.1f)
                 {
-                    movementDirection = input.Movement.normalized;
+                    return;
                 }
 
-                Debug.Log(movementDirection * character.Speed * Time.deltaTime);
-                character.CharacterController.Move(movementDirection * character.Speed * Time.deltaTime);
+                var targetAngle = Mathf.Atan2(direction.x,  direction.z) * Mathf.Rad2Deg + sceneData.CameraTransform.eulerAngles.y;
+                var angle = Mathf.SmoothDampAngle(movable.Transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity,
+                    configuration.TurnSmooth);
+                
+                movable.Transform.rotation = Quaternion.Euler(0f, angle, 0f);
+
             }
         }
     }

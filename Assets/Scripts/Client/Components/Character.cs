@@ -6,15 +6,12 @@ namespace Client.Components
     {
         public CharacterController CharacterController;
         public float Speed;
+        public float MaxSpeed;
+        public float Acceleration;
     }
 
     public struct Player
     {
         
-    }
-
-    public struct Motion
-    {
-        public Vector3 Vector;
     }
 }

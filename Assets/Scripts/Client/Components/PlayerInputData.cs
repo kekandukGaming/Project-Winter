@@ -7,5 +7,8 @@ namespace Client.Components
         public Vector3 Movement;
         public Vector3 MousePosition;
         public bool Jump;
+
+        public bool AbilityApplied;
+        public int AbilityIndex;
     }
 }

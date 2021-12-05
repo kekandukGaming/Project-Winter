@@ -13,8 +13,14 @@ namespace Client.Systems
             foreach (var i in inputFilter)
             {
                 ref var input = ref inputFilter.Get1(i);
-                
+
                 input.Movement = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
+
+                if (Input.GetKeyDown(KeyCode.Q))
+                {
+                    input.AbilityApplied = true;
+                    input.AbilityIndex = 0;
+                }
             }
         }
     }

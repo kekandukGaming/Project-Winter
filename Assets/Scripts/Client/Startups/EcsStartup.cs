@@ -16,8 +16,6 @@ namespace Client {
         private EcsSystems _fixedSystems;
 
         private void Start () {
-            // void can be switched to IEnumerator for support coroutines.
-            
             _world = new EcsWorld ();
             _systems = new EcsSystems (_world);
             _fixedSystems = new EcsSystems(_world);
@@ -32,8 +30,15 @@ namespace Client {
                 .Add(new PlayerInitSystem())
                 .Add(new GravitySystem())
                 .Add(new PlayerMovementSystem())
+                .Add(new AbilityCastSystem())
+                .Add(new PlayerCastSystem())
+                .Add(new DashAbilitySystem())
+                .Add(new CharacterUpdatePositionSystem())
+                .Add(new AbilitiesSystem())
+                .Add(new PlayerRotationSystem())
                 
-                // inject service instances here (order doesn't important), for example:
+                .OneFrame<CastRequest>()
+                
                 .Inject(sceneData)
                 .Inject(configuration);
 

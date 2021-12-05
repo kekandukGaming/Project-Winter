@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: Configuration
   m_EditorClassIdentifier: 
   characterView: {fileID: 409425250868598325, guid: 86cc00294f2d7e7418dc1df86971f469, type: 3}
-  Speed: 50
-  DashAbilityDistance: 15
+  AbilitiesData: {fileID: 11400000, guid: be3c53aa9011b7d45bb6ab2ca2aceca2, type: 2}
+  Acceleration: 1
+  MaxSpeed: 5

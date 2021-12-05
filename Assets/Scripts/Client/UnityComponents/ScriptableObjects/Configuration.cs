@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Client.UnityComponents.Abilities;
+using UnityEngine;
 
 namespace Client.UnityComponents
 {
@@ -6,7 +7,9 @@ namespace Client.UnityComponents
     public class Configuration : ScriptableObject
     {
         public CharacterView characterView;
-        public float Speed;
-        public float DashAbilityDistance;
+        public AbilitiesData AbilitiesData;
+        public float Acceleration = 1f;
+        public float MaxSpeed = 5f;
+        public float TurnSmooth = 0.1f;
     }
 }
